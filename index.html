@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>변화를 위한 48시간, 마이파크 텔레비전 2020</title>
+    <meta name="description" content="변화를 위한 48시간, 마이파크 텔레비전, 2020년 11월 12일~13일, 방안에서 즐기는 온라인 축제!">
+    <meta name="keywords" content="서울혁신파크, 마이파크텔레비전, MFT">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Daum Postcode API -->
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <style>
+        /* Custom Styles for Video Background */
+        .video-background {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0; /* 비디오가 보이도록 z-index 조정 */
+        }
+        /* YouTube API로 생성되는 div 컨테이너 스타일 */
+        #tciYoutubePlayer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100vw; /* 최소 너비 설정 */
+            min-height: 100vh; /* 최소 높이 설정 */
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            pointer-events: none; /* 배경 위 콘텐츠 클릭 가능하도록 */
+            opacity: 0.6; /* 투명도 조절 */
+            z-index: 0; /* 비디오가 보이도록 z-index 설정 */
+        }
+        /* Aspect Ratio Handling to ensure video covers screen */
+        @media (min-aspect-ratio: 16/9) {
+            #tciYoutubePlayer { 
+                height: 56.25vw; 
+            }
+        }
+        @media (max-aspect-ratio: 16/9) {
+            #tciYoutubePlayer { 
+                width: 177.78vh; 
+            }
+        }
+        
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+        
+        /* Modal Transitions */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50">
+
+    <!-- Loading Mask (Simulated) -->
+    <div id="preloader" class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="fixed top-0 w-full z-40 transition-all duration-300 bg-black/80 backdrop-blur-sm text-white py-3 shadow-lg">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+                <i class="fas fa-tv text-orange-500"></i>
+                <span>MY PARK TV</span>
+            </a>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-2xl focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:block">
+                <ul class="flex space-x-6 text-sm font-medium">
+                    <li><a href="#schedule" class="hover:text-orange-400 transition">페스티벌 다시보기</a></li>
+                    <li><a href="#register" class="hover:text-orange-400 transition">사전참여 이벤트</a></li>
+                    <li><a href="#sponsors" class="hover:text-orange-400 transition">이노상점 SIP홈쇼핑</a></li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 border-t border-gray-700">
+            <ul class="flex flex-col p-4 space-y-3">
+                <li><a href="#schedule" class="block hover:text-orange-400">페스티벌 다시보기</a></li>
+                <li><a href="#register" class="block hover:text-orange-400">사전참여 이벤트</a></li>
+                <li><a href="#sponsors" class="block hover:text-orange-400">이노상점 SIP홈쇼핑</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900">
+        <!-- Video Background -->
+        <div class="video-background">
+            <!-- 
+                YouTube Background Video 
+                ID: iZ9oLWpS4QQ 
+                YouTube IFrame API를 사용하여 배경 비디오 재생
+            -->
+            <div id="tciYoutubePlayer"></div>
+        </div>
+        
+        <div class="relative z-20 container mx-auto px-4 text-center text-white mt-16">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
+                <span class="block text-orange-500 text-2xl md:text-3xl mb-2">변화를 위한 48시간</span>
+                마이파크 텔레비전
+            </h1>
+            <p class="text-lg md:text-xl mb-10 opacity-90">2020년 11월 12일~13일, 방안에서 즐기는 온라인 축제!</p>
+            
+            <div class="flex justify-center gap-4">
+                <a href="#schedule" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold transition shadow-lg transform hover:scale-105">
+                    <i class="fas fa-play-circle mr-2"></i> 행사 다시보기
+                </a>
+            </div>
+            
+            <!-- Mobile Video Placeholder Removed (Background video is now active on mobile) -->
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section id="schedule" class="py-20 bg-white">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="text-center mb-12">
+                <div class="inline-block p-4 rounded-full bg-orange-100 text-orange-500 mb-4">
+                    <i class="far fa-calendar-alt text-3xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900">프로그램 일정</h3>
+                <p class="text-gray-500 mt-2">다시보고 싶은 프로그램을 선택해주세요</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex justify-center mb-8 border-b">
+                <button onclick="switchTab('day1')" id="tab-day1" class="tab-btn active px-8 py-4 font-bold text-lg border-b-4 border-orange-500 text-orange-600 focus:outline-none bg-orange-50">
+                    첫째날 <span class="block text-xs font-normal text-gray-500">11월 12일</span>
+                </button>
+                <button onclick="switchTab('day2')" id="tab-day2" class="tab-btn px-8 py-4 font-bold text-lg border-b-4 border-transparent text-gray-400 hover:text-gray-600 focus:outline-none">
+                    둘째날 <span class="block text-xs font-normal text-gray-500">11월 13일</span>
+                </button>
+            </div>
+
+            <!-- Day 1 Content -->
+            <div id="day1" class="schedule-content space-y-4">
+                <!-- Items Generated via JS for cleaner code, or manual below. Keeping manual to match original structure exactly. -->
+                
+                <!-- Item 1 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 10:00 AM ~ 11:00 AM</span>
+                            <h6 class="font-bold text-lg">On-Air@파크</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/aP5TxS8AdPk" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">이노페스티발 개막안내, 2일간의 프로그램 소개, 프로그램 프리뷰</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 11:00 AM ~ 12:00 PM</span>
+                            <h6 class="font-bold text-lg">어서와! 혁신파크는 처음이지?</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/xtBMRmj8qac" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">웨일스에서 온 마포청년 다니엘의 서울혁신파크 탐방기</p>
+                            <p class="text-sm text-gray-500 font-semibold">출연: 다니엘 브라이트, 나무</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 12:00 PM ~ 13:00 PM</span>
+                            <h6 class="font-bold text-lg">비건기사식당-메뉴판에 없는 비기</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/7ZWYdTB-5sU" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">비건까페 달냥의 메뉴판에 없는 비기 - 비건 김치와 콩고기 두루치기 만들기</p>
+                            <p class="text-sm text-gray-500 font-semibold">출연: 비건달냥의 켈리와 쏘이</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 13:00 PM ~ 14:30 PM</span>
+                            <h6 class="font-bold text-lg">차이나는 파크 - 작가들의 수다</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/YJXI7-vKR_I" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">코로나 시기를 살아가는 우리사회의 모습을 저명한 작가들의 말을 통해 조명</p>
+                            <p class="text-sm text-gray-500 font-semibold">출연: 김민섭 작가, 다니엘브라이트 작가, 홍세화 작가, 김버금 작가</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 14:30 PM ~ 15:30 PM</span>
+                            <h6 class="font-bold text-lg">동네공방 - 세상을 바꾸는 메이커</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/qNKBL_fog0Y" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">사회와 삶을 고민하며 메이커의 삶을 살아가는 파크의 공방들</p>
+                            <p class="text-sm text-gray-500 font-semibold">마을기술센터 핸즈, 마을공방사이, 적정기술공방</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 2 Content -->
+            <div id="day2" class="schedule-content hidden space-y-4">
+                
+                <!-- Item 2-1 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 10:00 AM</span>
+                            <h6 class="font-bold text-lg">On-Air@파크 (Day 2)</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/T5F5XlHPh70" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">어제 방송 리뷰 및 오늘 방송 프리뷰</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2-2 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 12:00 PM</span>
+                            <h6 class="font-bold text-lg">파크공감 - 한국의 보물을 노래하다</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/MJJKAD-SIPI" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">퓨전국악밴드 비단 공연</p>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Item 2-3 -->
+                 <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 13:30 PM</span>
+                            <h6 class="font-bold text-lg">2020서울혁신파크 100가지의 변화</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/JiwcMXWQO9k" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">2020년 서울혁신파크에 만들어진 100가지의 변화 이야기</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2-4 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 14:30 PM</span>
+                            <h6 class="font-bold text-lg">밀레니얼토크_다음 세상을 공감하다</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/oawbvfU4r8Q" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">밀레니얼 활동가들의 삶과 고민, 기성세대에 던지는 메세지</p>
+                             <p class="text-sm text-gray-500 font-semibold">출연: 이채은, 권지웅, 김혜미, 윤김진서, 이춘</p>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Item 2-5 -->
+                 <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 16:30 PM</span>
+                            <h6 class="font-bold text-lg">차이나는 파크 - 지구를 생각하는 마을</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/BAt-PXGW7dM" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">서울혁신센터의 주요 전환모델 생산 관련 사업 맛보기</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2-6 -->
+                <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 18:00 PM</span>
+                            <h6 class="font-bold text-lg">이노상점-SIP홈쇼핑2</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/MYIDqVDkXpc" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">홈쇼핑 형식으로 서울혁신센터 입주단체 물품 및 서비스 소개</p>
+                            <p class="text-sm text-gray-500 font-semibold">이풀약초협동조합, 플랜제닉, 문화집단너느로, 눈금</p>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Item 2-7 -->
+                 <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                        <div>
+                            <span class="text-orange-500 font-bold text-sm block mb-1"><i class="far fa-clock mr-1"></i> 19:00 PM</span>
+                            <h6 class="font-bold text-lg">파크문화산책 - 벼랑끝날다</h6>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <a href="https://youtu.be/0SBGvZNIv7A" target="_blank" onclick="event.stopPropagation()" class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> 다시보기
+                            </a>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform duration-200 accordion-icon"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-content bg-white">
+                        <div class="px-6 py-4 text-gray-600 border-t">
+                            <p class="mb-2">극단 벼랑끝 날다가 들려주는 가을, 밤 그리고 사랑이야기</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section id="register" class="py-20 relative bg-gray-800 text-white text-center">
+        <!-- Overlay Image Background (CSS gradient as placeholder) -->
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800 opacity-90 z-0"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-3xl font-bold mb-8 inline-block border-b-2 border-orange-500 pb-2">사전참여 이벤트</h2>
+            <p class="mb-8 text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                페이스북, 인스타그램 친구들에게 <span class="font-bold text-white">"변화를 위한 48시간-마이파크 텔레비전"</span>을 알려주세요! 
+                <br>행사 종료후 홍보 참여자 중 50분을 뽑아 기념 텀블러를 선물로 드립니다.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="openModal('gift-modal')" class="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white font-semibold py-3 px-8 rounded-full transition">
+                    기념품 수령주소 입력하기
+                </button>
+                 <button onclick="openModal('event-notice-modal')" class="bg-orange-600 border-2 border-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-full transition">
+                    이벤트 자세히 보기
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sponsors Section -->
+    <section id="sponsors" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-12">
+                <i class="fas fa-shopping-bag text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-800">이노상점 SIP홈쇼핑</h3>
+                <p class="text-gray-500 mt-2">참가업체들을 <span class="text-orange-500 font-semibold">실시간 라이브에서</span> 만나보세요!</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                <!-- Placeholders for Sponsor Logos -->
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">EARTHMAN</span>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">Writer Scoop</span>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">NANCEN</span>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">VIVA</span>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">NOONGEUM</span>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">약속의자전거</span>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">이풀약초</span>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center h-32">
+                    <span class="text-gray-400 font-bold">문화집단너느로</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-tv text-3xl text-white"></i>
+                    <div class="text-left">
+                        <p class="text-white font-bold">서울혁신파크</p>
+                        <p class="text-sm mt-1">서울시 은평구 통일로 684 미래청 2층</p>
+                        <p class="text-sm">Tel : 02-389-7512 | E-mail : help@seoulinnovationpark.co.kr</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 hover:text-white transition">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 hover:text-white transition">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+                &copy; 2020 Seoul Innovation Park. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+
+    <!-- Gift Address Modal -->
+    <div id="gift-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('gift-modal')"></div>
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md relative z-10 overflow-hidden transform transition-all scale-100">
+            <div class="bg-orange-500 p-4 text-white flex justify-between items-center">
+                <h5 class="font-bold text-lg">경품수령 주소입력하기</h5>
+                <button onclick="closeModal('gift-modal')" class="text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6">
+                <form class="space-y-4" onsubmit="event.preventDefault(); alert('제출되었습니다!'); closeModal('gift-modal');">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">수령인 이름</label>
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-orange-500 focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">전화번호</label>
+                        <input type="tel" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-orange-500 focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">주소</label>
+                        <div class="flex gap-2 mb-2">
+                            <input type="text" id="postcode" placeholder="우편번호" class="w-1/2 border border-gray-300 rounded px-3 py-2" readonly onclick="execDaumPostcode()">
+                            <button type="button" onclick="execDaumPostcode()" class="w-1/2 bg-gray-200 text-gray-700 rounded px-3 py-2 hover:bg-gray-300">주소검색</button>
+                        </div>
+                        <input type="text" id="addr1" placeholder="기본주소" class="w-full border border-gray-300 rounded px-3 py-2 mb-2" readonly>
+                        <input type="text" id="addr2" placeholder="상세주소" class="w-full border border-gray-300 rounded px-3 py-2">
+                    </div>
+                    <button type="submit" class="w-full bg-orange-500 text-white font-bold py-3 rounded hover:bg-orange-600 transition">입력하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Info Modal -->
+    <div id="event-notice-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('event-notice-modal')"></div>
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg relative z-10 overflow-hidden">
+             <div class="bg-gray-800 p-4 text-white flex justify-between items-center">
+                <h5 class="font-bold text-lg">사전참여 이벤트 안내</h5>
+                <button onclick="closeModal('event-notice-modal')" class="text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6">
+                <h6 class="font-bold text-orange-600 mb-2">참여 방법</h6>
+                <ol class="list-decimal list-inside text-sm text-gray-600 space-y-1 mb-4">
+                    <li>SNS에 배너와 소개 메시지를 포스팅해주세요.</li>
+                    <li>이벤트 응모하기 버튼을 눌러 정보를 입력하면 끝!</li>
+                </ol>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-sm text-yellow-700">
+                    <p class="font-bold">주의사항</p>
+                    <p>포스팅은 전체공개여야 하며 행사 종료시까지 유지되어야 합니다.</p>
+                </div>
+                <div class="mt-6 grid grid-cols-2 gap-4 text-center">
+                    <div class="border p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <div class="h-20 bg-gray-200 mb-2 flex items-center justify-center text-gray-400">IMG 1</div>
+                        <span class="text-xs text-blue-600">배너1 다운로드</span>
+                    </div>
+                    <div class="border p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <div class="h-20 bg-gray-200 mb-2 flex items-center justify-center text-gray-400">IMG 2</div>
+                        <span class="text-xs text-blue-600">배너2 다운로드</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // YouTube IFrame API 변수 선언
+        let tciYoutubePlayerInstance = null;
+        let tciYouTubeAPIReady = false;
+        
+        // YouTube IFrame API 준비 완료 콜백 함수
+        function onYouTubeIframeAPIReady() {
+            tciYouTubeAPIReady = true;
+            // YouTube 플레이어 인스턴스 생성
+            try {
+                tciYoutubePlayerInstance = new YT.Player('tciYoutubePlayer', {
+                    videoId: 'iZ9oLWpS4QQ', // 비디오 ID
+                    playerVars: {
+                        'autoplay': 1, // 자동 재생
+                        'mute': 1, // 음소거
+                        'controls': 0, // 컨트롤 숨김
+                        'loop': 1, // 반복 재생
+                        'playlist': 'iZ9oLWpS4QQ', // 단일 비디오 반복을 위한 플레이리스트
+                        'playsinline': 1, // 인라인 재생
+                        'modestbranding': 1, // YouTube 로고 최소화
+                        'rel': 0, // 관련 동영상 숨김
+                        'showinfo': 0, // 비디오 정보 숨김
+                        'iv_load_policy': 3, // 주석 비활성화
+                        'fs': 0 // 전체화면 버튼 숨김
+                    },
+                    events: {
+                        'onReady': function(event) {
+                            // 플레이어 준비 완료 시 자동 재생
+                            event.target.playVideo();
+                            console.log('YouTube 플레이어 준비 완료 및 재생 시작');
+                        },
+                        'onStateChange': function(event) {
+                            // 비디오 종료 시 자동으로 다시 재생
+                            if (event.data === YT.PlayerState.ENDED) {
+                                event.target.playVideo();
+                            }
+                        },
+                        'onError': function(event) {
+                            console.error('YouTube 플레이어 오류:', event.data);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('YouTube 플레이어 생성 오류:', error);
+            }
+        }
+        
+        // YouTube API 로드 확인 및 재시도 로직
+        function tciInitYouTubePlayer() {
+            // API가 이미 로드되었는지 확인
+            if (typeof YT !== 'undefined' && YT.Player) {
+                if (!tciYoutubePlayerInstance) {
+                    onYouTubeIframeAPIReady();
+                }
+            } else {
+                // API가 아직 로드되지 않았으면 잠시 후 재시도
+                setTimeout(tciInitYouTubePlayer, 100);
+            }
+        }
+        
+        // DOM 로드 완료 후 YouTube 플레이어 초기화 시도
+        document.addEventListener('DOMContentLoaded', function() {
+            tciInitYouTubePlayer();
+        });
+        
+        // window 로드 완료 후에도 한 번 더 시도
+        window.addEventListener('load', function() {
+            if (!tciYoutubePlayerInstance && typeof YT !== 'undefined' && YT.Player) {
+                tciInitYouTubePlayer();
+            }
+        });
+        
+        // Preloader
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.classList.add('opacity-0');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 500);
+        });
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Update Tab Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'text-orange-600', 'bg-orange-50');
+                btn.classList.add('border-transparent', 'text-gray-400');
+            });
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-gray-400');
+            activeBtn.classList.add('border-orange-500', 'text-orange-600', 'bg-orange-50');
+
+            // Update Content
+            document.querySelectorAll('.schedule-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        // Accordion Logic
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.accordion-icon');
+            
+            // Toggle current
+            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                content.style.maxHeight = '0px';
+                icon.style.transform = 'rotate(0deg)';
+                button.classList.remove('bg-gray-100');
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(180deg)';
+                button.classList.add('bg-gray-100');
+            }
+        }
+
+        // Modal Logic
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Daum Postcode Integration (Standard Korean Address Service)
+        function execDaumPostcode() {
+            try {
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                        var addr = ''; 
+                        var extraAddr = ''; 
+
+                        if (data.userSelectedType === 'R') { 
+                            addr = data.roadAddress;
+                        } else { 
+                            addr = data.jibunAddress;
+                        }
+
+                        if(data.userSelectedType === 'R'){
+                            if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                                extraAddr += data.bname;
+                            }
+                            if(data.buildingName !== '' && data.apartment === 'Y'){
+                                extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                            }
+                            if(extraAddr !== ''){
+                                extraAddr = ' (' + extraAddr + ')';
+                            }
+                            document.getElementById("addr2").value = extraAddr;
+                        } else {
+                            document.getElementById("addr2").value = '';
+                        }
+
+                        document.getElementById('postcode').value = data.zonecode;
+                        document.getElementById("addr1").value = addr;
+                        document.getElementById("addr2").focus();
+                    }
+                }).open();
+            } catch (e) {
+                alert('주소 검색 서비스를 로드할 수 없습니다.');
+            }
+        }
+    </script>
+</body>
+</html>
